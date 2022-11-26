@@ -10,12 +10,14 @@ import Second from '../Components/Second'
 import Third from '../Components/Third'
 
 import styles from '../Components/styles.css'
+import NewNav from '../Components/NewNav'
 
 const Home = () => {
     const logo = 'MagicValley'
   return (
     <div>
         <Navbar logo = {logo} one='Home' two ='About' three='Booking' four='Contacts' five='Events' />
+        {/* <NewNav logo = {logo} one='Home' two ='About' three='Booking' four='Contacts' five='Events' /> */}
 
         {/* first section */}
         <Main desc='Camping in the Woods in the Best Way'/>
