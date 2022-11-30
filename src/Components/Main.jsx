@@ -9,7 +9,7 @@ const Main = (props) => {
     }
     return (
         <div className='flex justify-center '>
-            <div className=' my-auto md:grid md:grid-cols-2 w-full px-6'>
+            <div className='  md:grid md:grid-cols-2 w-full px-6'>
 
 
                 <div className='py-16'style={{height:'60vh'}}>

@@ -6,10 +6,12 @@ const AdminLog = () => {
     const [username,setUsername] = useState('')
     const [password,setPassword] = useState('')
     const [button ,setButton] = useState(false)
+    const [isAdmin,setIsAdmin] = useState(false)
     const navigate = useNavigate()
 
   useEffect(()=>{
     if(username==='admin' && password==='admin123'){
+        setIsAdmin(true)
         setButton(true)
     }else{
         setButton(false)
@@ -18,7 +20,8 @@ const AdminLog = () => {
 
   const toAdminHome =()=>{
 
-    navigate('/adminHome')
+    navigate('/adminOptions')
+    localStorage.setItem('admin',isAdmin)
   }
   
   return (
