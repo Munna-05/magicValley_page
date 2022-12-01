@@ -16,23 +16,29 @@ const AccountsDetails = () => {
     const [allIncome, setAllIncome] = useState([])
     const [allExpense, setAllExpense] = useState([])
     const [incomeFrom, setIncomeFrom] = useState('')
-    const [alltransactions, setAllTransactions] = useState([])
+    const [reload, setreload] = useState(false)
+    const [monthly,setMonthly] = useState(true)
+    const [date, setDate] = useState('')
+    const [monthlyData,setMonthlyData] = useState([])
+    const [dynamicName , setDynamicName] = ('')
+    const local = 'http://localhost:5000/'
+    const production = 'https://magic-backend-nqdgjcyf9-munna-05.vercel.app/'
 
     useEffect(() => {
 
-        axios.get('http://localhost:5000/admin/get_income').then((res) => {
+        // axios.get('http://localhost:5000/admin/get_income').then((res) => {
+        axios.get(`${local}admin/get_income`).then((res) => {
             setAllIncome(res.data)
 
         }).then(() => {
 
-            axios.get('http://localhost:5000/admin/get_expense').then((res) => {
+            axios.get(`${local}admin/get_expense`).then((res) => {
                 setAllExpense(res.data)
-                console.table(allIncome, allExpense)
+                // console.table(allIncome, allExpense)
 
             })
         })
 
-        setProfit(total_income - total_expense)
 
         if (profit > 0) {
 
@@ -45,40 +51,49 @@ const AccountsDetails = () => {
 
         }
 
-    }, [ incomeAmount, expenseAmount,profit,expenseFrom,incomeFrom ])
-  
+    }, [reload,allExpense,allIncome])
+    useEffect(() => {
+        setProfit(total_income - total_expense)
+
+    },[allIncome,allExpense])
     // const total_income = allIncome.map(())
     let total_income = 0;
 
     allIncome.forEach(element => {
-      total_income += element.amount;
+        total_income += element.amount;
     });
-    
-    console.log(total_income);
+
+    // console.log(total_income);
 
     let total_expense = 0;
 
     allExpense.forEach(element => {
-      total_expense += element.amount;
+        total_expense += element.amount;
     });
-    
-    console.log(total_expense);
-    
-    
-     
+
+    // console.log(total_expense);
+
+
+
     const Expense_Data = {
         text: expenseFrom,
-        amount: expenseAmount
+        amount: expenseAmount,
+        date: moment(Date.now()).format('ll')
     }
     const Income_Data = {
         text: incomeFrom,
-        amount: incomeAmount
+        amount: incomeAmount,
+        date: moment(Date.now()).format('ll')
+
+
 
     }
     const submit_income = () => {
-        axios.post('http://localhost:5000/admin/add_income', Income_Data).then(() => {
+        axios.post('http://localhost:5000/admin/add_income', Income_Data).then((res) => {
 
             toast.success('Income Updated', { autoClose: 500 })
+            setreload(!reload)
+
         })
 
         setIncomeAmount(0)
@@ -88,6 +103,8 @@ const AccountsDetails = () => {
         axios.post('http://localhost:5000/admin/add_expense', Expense_Data).then(() => {
 
             toast.success('Expense Updated', { autoClose: 500 })
+            setreload(!reload)
+
         })
 
 
@@ -95,9 +112,45 @@ const AccountsDetails = () => {
         setExpenseAmount(0)
         setExpenseFrom('')
     }
+
+    const getDates_income = () => {
+
+        const selected_Date ={ date:moment(date).format('ll').toString() }
+        axios.post(`${local}admin/income_date`,selected_Date).then((response)=>{
+            setMonthlyData(response.data)
+            setreload(!reload)
+            setDynamicName("Income")
+            
+        })
+
+
+    }
+    const getDates_expense = () => {
+        const name = 'Expense'
+        const selected_Date ={ date:moment(date).format('ll').toString() }
+        axios.post(`${local}admin/expense_date`,selected_Date).then((response)=>{
+            setMonthlyData(response.data)
+            setreload(!reload)
+
+
+
+        })
+
+      
+    }
     return (
-        <div className=' mt-16'>
+        <div className=' mt-8'>
             <ToastContainer />
+
+            <div className='mb-10'><button className='
+            bg-blue-600 px-4 py-2 border-4 rounded-lg border-white text-white shadow shadow-md shadow-slate-600 hover:shadow-slate-800
+            hover:bg-blue-700
+            ' onClick={()=>setMonthly(!monthly)}>{monthly?'View Monthly Statement':"View Overall Statement"}</button></div>
+
+            <div>{monthly?
+            
+            <>
+            
             <div className='flex justify-center'>
                 <div className='bg-slate-900 transition duration-500 hover:bg-black rounded-lg shadow mx-8 shadow shadow-md border-8 border-white '>
 
@@ -132,52 +185,37 @@ const AccountsDetails = () => {
 
                 </div>
             </div>
-
-
-            <div className=' flex justify-center mx-auto mt-10'>
-                <div className='mx-3'><TransactionTable text='text-green-300' name='Income' category='Amount' Date='Date' details={allIncome} /></div>
-                <div className='mx-3'><TransactionTable text='text-red-400' name='Expense' category='Amount' Date='Date' details={allExpense} /></div>
-
-
-                {/* <div class="overflow-x-auto relative shadow-md sm:rounded-lg">
-                    <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                            <tr>
-                                <th scope="col" class="py-3 px-6">
-                                    Income From
-                                </th>
-                                <th scope="col" class="py-3 px-6">
-                                    Income Amount
-                                </th>
-                                <th scope="col" class="py-3 px-6">
-                                    Date
-                                </th>
-
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {alltransactions.map((result) => {
-                                return (
-                                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                                        <th scope="row" class="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                            {result.text}
-                                        </th>
-                                        <td class="py-4 px-6">
-                                            {result.amount}
-                                        </td>
-                                        <td class="py-4 px-6">
-                                            {moment(result.createdAt).format('lll')}
-                                        </td>
-
-                                    </tr>
-                                )
-                            })}
-
-                        </tbody>
-                    </table>
-                </div> */}
+            <div className=' md:flex justify-center mx-auto mt-10 mb-16'>
+                <div className='mx-1'><TransactionTable text='text-green-300' name='Income' category='Amount' Date='Date' details={allIncome} /></div>
+                <div className='mx-1'><TransactionTable text='text-red-400' name='Expense' category='Amount' Date='Date' details={allExpense} /></div>
             </div>
 
+            
+            
+            </>:<>
+
+              {/* TABLE  */}
+           
+
+
+              <div className='mt-8 bg-blue-100 w-fit mx-auto flex justify-center p-8 rounded-lg border-white shadow shadow-slate-400 border-4'>
+                <input className='w-80 p-1  rounded-md border-4 border-white px-3' onChange={(e) => setDate(e.target.value)} type="date" />
+                <button onClick={getDates_income} className='px-3 mx-3 bg-green-500 text-sm hover:bg-slate-900 text-white py-1.5 rounded-md' type='submit'>Get All Incomes</button>
+                <button onClick={getDates_expense} className='px-3 bg-red-600 text-sm hover:bg-slate-900 text-white py-1.5 rounded-md' type='submit'>Get All Expenses</button>
+
+
+                
+            </div>
+            <div className=' md:flex justify-center mx-auto mt-10 mb-16'>
+                <div className='mx-1'><TransactionTable text='text-green-300' monthly={monthly}  name='' category='Amount' Date='Date' details={monthlyData} /></div>
+            </div>
+
+            
+            </>}</div>
+
+            
+            
+          
         </div>
     )
 }
