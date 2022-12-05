@@ -71,6 +71,7 @@ const AccountsDetails = () => {
     allIncome.forEach(element => {
         total_income += element.amount;
     });
+   
 
     // console.log(total_income);
 

@@ -5,6 +5,7 @@ import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
+import axios from 'axios'
 
 
 const Bookings = () => {
@@ -31,7 +32,9 @@ const Bookings = () => {
     address: address,
     phone: number,
     booking: bookingDate,
-    date: moment(Date.now()).format('ll')
+    date: moment(Date.now()).format('ll'),
+    checkout:checkout,
+    numberOfPeople:numberOfppl
   }
 
   const handleSubmit = () => {
@@ -39,11 +42,14 @@ const Bookings = () => {
       toast.error('Enter all Booking Details', { autoClose: 1000 })
     } else {
       toast.success('Booking Successfull', { autoClose: 600 })
-      setAddress('')
-      setName('')
-      setNumber()
-      setBookingDate('')
-      console.table(bookingDetails)
+      axios.post('http://localhost:5000/admin/add_booking',bookingDetails).then((res)=>{
+        setAddress('')
+        setName('')
+        setNumber()
+        setBookingDate('')
+        console.table(bookingDetails)
+      })
+     
     }
   }
   const toAllBookings = () => {
@@ -53,13 +59,17 @@ const Bookings = () => {
     <div>
       <ToastContainer />
       <div className=' justify-center max-auto pt-10 '>
-        <div className=' mx-auto shadow shadow-md shadow-slate-600 md:w-1/4 sm:w-1/4 lg:w-1/4 pb-5 pt-1 px-1 bg-white mt-16' style={{ height: '50vh' }}>
+        <div className=' mx-auto shadow shadow-md shadow-slate-600 md:w-1/4 sm:w-1/4 lg:w-1/4 pb-5 pt-1 px-1 bg-white mt-16' style={{ height: 'auto' }}>
           <div className='bg-blue-600 text-lg font-bold text-white py-5 ' style={{ width: 'auto' }}>Add Booking</div>
 
           <input value={name} required placeholder='Enter Name' onChange={(e) => setName(e.target.value)} type="text" className='bg-slate-200 py-1 px-2 text-sm mt-16 w-2/3 rounded my-2 mx-2' />
           <textarea value={address} required placeholder='Enter Address' onChange={(e) => setAddress(e.target.value)} type="text" className='bg-slate-200 h-20 py-1 px-2 text-sm w-2/3 rounded my-2 mx-2' />
           <input value={number} required placeholder='Enter Phone Number' onChange={(e) => setNumber(e.target.value)} minLength={10} maxLength={10} type="Number" className='bg-slate-200 py-1 px-2 text-sm w-2/3 rounded my-2 mx-2' />
-          <input value={bookingDate} required placeholder='' type="date" onChange={(e) => setBookingDate(e.target.value)} className='bg-slate-200 py-1 px-2 text-sm w-2/3 rounded my-2 mx-2' />
+          <label className='text-sm flex py-1 px-10 ml-7 text-sm w-2/3 rounded my-2 mx-2' htmlFor="">Check in Date</label>
+          <input value={bookingDate} required placeholder='' type="date" onChange={(e) => setBookingDate(e.target.value)} className='bg-slate-200 py-1 px-2 text-sm w-2/3 rounded my-2 mx-2' /> <br />
+          <label className='text-sm flex py-1 px-10 ml-7 text-sm w-2/3 rounded my-2 mx-2' htmlFor="">Check out Date</label>
+          <input value={checkout} required placeholder='' type="date" onChange={(e) => setCheckout(e.target.value)} className='bg-slate-200 py-1 px-2 text-sm w-2/3 rounded my-2 mx-2' />
+          <input value={numberOfppl} required placeholder='Number of People' onChange={(e) => setNumberOfppl(e.target.value)} minLength={10} maxLength={10} type="Number" className='bg-slate-200 py-1 px-2 text-sm w-2/3 rounded my-2 mx-2' />
 
           <div className=''>
             <button type='submit' onClick={handleSubmit} className='mx-auto mt-5 bg-blue-500 px-5 py-1 text-white' style={{ width: '17vw' }}>Add</button>
