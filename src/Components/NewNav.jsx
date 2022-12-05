@@ -1,12 +1,30 @@
 import React from 'react'
-// import { useNavigate } from 'react-router-dom'
+import { useState } from 'react'
+import { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 const NewNav = (props) => {
-    // const navigate = useNavigate()
+    const navigate = useNavigate()
         const toLogin = () => {
-        // navigate('/login')
+        navigate('/login')
     }
-    const logout=() => localStorage.removeItem('admin')
+    const [admin,setAdmin] = useState(false)
+    useEffect(()=>{
+
+        if(props.admin) setAdmin(props.admin)
+       
+        
+    },[props.admin])
+    const logout=() => {
+        localStorage.removeItem('admin')
+
+    
+    }
+    const login=() => {
+        localStorage.removeItem('admin')
+
+    
+    }
     return (
         <div className=''>
 
@@ -16,12 +34,12 @@ const NewNav = (props) => {
                     <div className='mt-3'> <a href='/' className="self-center text-xl mx-5 font-semibold text-black">{props.logo}</a></div>
 
                     <div className="flex md:order-2">
-                        {props.admin ?
+                        {admin ?
 
-                            <a onClick={logout} className="text-white bg-blue-600 hover:bg-blue-800  font-sm rounded-lg text-sm py-2.5 px-3 h-10 text-center mx-5 md:mr-0 0">Log out</a>
+                            <button onClick={logout} className="text-white bg-blue-600 hover:bg-blue-800 cursor-pointer font-sm rounded-lg text-sm py-2.5 px-3 h-10 text-center mx-5 md:mr-0 0">Log out</button>
                             :
 
-                            <a href='/login' className="text-white bg-blue-600 hover:bg-blue-800  font-sm rounded-lg text-sm py-2.5 px-3 h-10 text-center mx-5 md:mr-0 0">Login</a>
+                            <button onClick={toLogin} className="text-white bg-blue-600 hover:bg-blue-800 cursor-pointer font-sm rounded-lg text-sm py-2.5 px-3 h-10 text-center mx-5 md:mr-0 0">Login</button>
                         }
 
                         <button data-collapse-toggle="navbar-sticky" type="button" className="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="navbar-sticky" aria-expanded="false">

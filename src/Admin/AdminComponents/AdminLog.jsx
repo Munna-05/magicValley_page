@@ -8,8 +8,11 @@ const AdminLog = () => {
     const [button ,setButton] = useState(false)
     const [isAdmin,setIsAdmin] = useState(false)
     const navigate = useNavigate()
+    const admin = localStorage.getItem('admin')
 
   useEffect(()=>{
+    
+    if(admin) navigate('/adminOptions')
     if(username==='admin' && password==='admin123'){
         setIsAdmin(true)
         setButton(true)

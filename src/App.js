@@ -16,31 +16,36 @@ import AdminNav from './Admin/AdminComponents/AdminNav';
 import { useState } from 'react';
 import Accounts from './Admin/AdminPages/Accounts';
 import BookingsPage from './Admin/AdminPages/BookingsPage';
+import Error from './Pages/Error';
+import All_Bookings from './Admin/AdminPages/All_Bookings';
 function App() {
   const [isAdmin,setisAdmin] = useState(false)
   const logo = 'magicValley'
   
+  const user = localStorage.getItem('user')
 useEffect(()=>{
   const isAdmin = localStorage.getItem('admin')
   if(isAdmin) setisAdmin(isAdmin)
   setisAdmin(isAdmin)
 
-},[isAdmin])  
+},[])  
   return (
-    <div className="App">
+      <BrowserRouter>
       {isAdmin?<AdminNav/>:
        <NewNav logo={logo} one='Home' two='About' three='Booking' four='Contacts' five='Events' />
       }
+    <div className="App">
      
-
-      <BrowserRouter>
         <Routes>
+
           <Route path='/' element={<Home />} />
           <Route path='/login' element={<LoginPage />} />
           <Route path='/signup' element={<SignUpPage />} />
           <Route path='/about' element={<AboutPage />} />
           <Route path='/contact' element={<ContactPage />} />
           <Route path='/events' element={<EventPage />} />
+          <Route path='/user/toBookings' element={!user?<LoginPage />:<BookingsPage />} />
+
 
 
 
@@ -51,12 +56,15 @@ useEffect(()=>{
           <Route path='/adminHome' element={<AdminHomePage />} />
           <Route path='/admin/toAccounts' element={<Accounts />} />
           <Route path='/admin/toBookings' element={<BookingsPage />} />
+          <Route path='/admin/toAllBookings' element={<All_Bookings/>}/>
+          <Route path='*' element={<Error />} />
+
 
 
         </Routes>
-      </BrowserRouter>
 
     </div>
+      </BrowserRouter>
   );
 }
 
